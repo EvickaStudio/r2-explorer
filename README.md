@@ -19,7 +19,7 @@ Prerequisites: - Python 3+
 1. Clone the repository
 
 ```bash
-git clone https://github.com/evickastudio/r2-explorer.git
+git clone https://github.com/EvickaStudio/r2-explorer.git
 ```
 
 2. Install the requirements
