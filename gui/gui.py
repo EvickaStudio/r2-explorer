@@ -225,9 +225,14 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         item = self.treeWidget.currentItem()
         if item and self.selected_bucket:
-            self.s3_client.delete(self.selected_bucket, item.text(0))
+            key = []
+            while item:
+                key.append(item.text(0))
+                item = item.parent()
+            key = "/".join(reversed(key))  # Construct the full path
+            self.s3_client.delete(self.selected_bucket, key)
             self.statusBar.showMessage(
-                f"File {item.text(0)} deleted successfully"
+                f"File {key} deleted successfully"
             )  # Show a message in the status bar
 
     def download(self) -> None:
