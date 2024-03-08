@@ -71,10 +71,11 @@ class S3Client:
         :return: A presigned URL for the object.
         """
         try:
-            url = self.client.generate_presigned_url(
-                "get_object", Params={"Bucket": bucket, "Key": item}, ExpiresIn=3600
+            return self.client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": bucket, "Key": item},
+                ExpiresIn=3600,
             )
-            return url
         except (BotoCoreError, NoCredentialsError) as e:
             print(
                 f"Failed to generate URL for object '{item}' in bucket '{bucket}': {e}"
