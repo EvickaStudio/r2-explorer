@@ -10,6 +10,7 @@ A very simple Cloudflare R2 file explorer build using Python and PyQT6
 - Upload an object to R2
 - Delete an object from R2
 - Generate a download link for an R2 object (1 hour valid)
+- Show overall storage usage of your R2 account (When clicking on `Refresh`)
 - Colorful GUI (100% not intented)
 
 ## Installation
@@ -58,7 +59,6 @@ Distributed under the Apache License. See [LICENSE](LICENSE) for more informatio
 Now with cool Icon!
 
 ![GUI](assets/image.png)
-
 
 ## Contributing
 
