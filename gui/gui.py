@@ -48,8 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.treeWidget.setContextMenuPolicy(
             QtCore.Qt.ContextMenuPolicy.CustomContextMenu
         )
-        self.treeWidget.customContextMenuRequested.connect(
-            self.on_treeview_right_click)
+        self.treeWidget.customContextMenuRequested.connect(self.on_treeview_right_click)
 
         self.menu = QtWidgets.QMenu()
         self.menu.addAction("Generate URL", self.generate_url)
@@ -185,8 +184,7 @@ class MainWindow(QtWidgets.QMainWindow):
             threading.Thread(
                 target=self.populate_treeview, args=(self.selected_bucket,)
             ).start()
-            self.statusBar.showMessage(
-                f"Bucket {self.selected_bucket} refreshed")
+            self.statusBar.showMessage(f"Bucket {self.selected_bucket} refreshed")
             self.update_storage_usage()
 
     def upload(self) -> None:
@@ -265,7 +263,8 @@ class MainWindow(QtWidgets.QMainWindow):
         :param buckets: A dictionary mapping bucket names to their sizes in bytes.
         :return: The total storage usage in MB.
         """
-        return sum(round(bucket_size / 1024 / 1024, 2) for bucket_size in buckets.values())
+        total_usage = sum(bucket_size / 1024 / 1024 for bucket_size in buckets.values())
+        return round(total_usage, 2)
 
     def update_storage_usage(self) -> None:
         """
@@ -274,7 +273,6 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             buckets = self.s3_client.show_storage_usage()
             total_usage = self.calculate_storage_usage(buckets)
-            self.statusBar.showMessage(
-                f"Total storage usage: {total_usage} MB")
+            self.statusBar.showMessage(f"Total storage usage: {total_usage} MB")
         except Exception as e:
             print(f"Failed to update storage usage: {e}")
