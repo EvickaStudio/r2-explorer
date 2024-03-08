@@ -1,6 +1,7 @@
 import math
 import os
 import threading
+from typing import Dict
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QFileDialog
@@ -156,7 +157,7 @@ class MainWindow(QtWidgets.QMainWindow):
         i = int(math.floor(math.log(size_bytes, 1024)))
         p = math.pow(1024, i)
         s = round(size_bytes / p, 2)
-        return "%s %s" % (s, size_name[i])
+        return f"{s} {size_name[i]}"
 
     def on_treeview_right_click(self, point: QtCore.QPoint) -> None:
         """
@@ -164,8 +165,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         :param point: The point where the tree view was clicked.
         """
-        item = self.treeWidget.itemAt(point)
-        if item:
+        if item := self.treeWidget.itemAt(point):
             self.menu.exec(self.treeWidget.mapToGlobal(point))
 
     def on_url_generated(self, url: str) -> None:
@@ -176,7 +176,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         QtWidgets.QApplication.clipboard().setText(url)
 
-    def refresh(self) -> None:  # Add this method
+    def refresh(self) -> None:
         """
         Refresh the tree view.
         """
@@ -187,6 +187,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ).start()
             self.statusBar.showMessage(
                 f"Bucket {self.selected_bucket} refreshed")
+            self.update_storage_usage()
 
     def upload(self) -> None:
         """
@@ -251,3 +252,24 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.statusBar.showMessage(
                         f"File {original_filename} downloaded successfully"
                     )  # Show a message in the status bar
+
+    def calculate_storage_usage(self, buckets: Dict[str, int]) -> float:
+        """
+        Calculate the total storage usage of all buckets.
+
+        :param buckets: A dictionary mapping bucket names to their sizes in bytes.
+        :return: The total storage usage in MB.
+        """
+        return sum(round(bucket_size / 1024 / 1024, 2) for bucket_size in buckets.values())
+
+    def update_storage_usage(self) -> None:
+        """
+        Update the storage usage display.
+        """
+        try:
+            buckets = self.s3_client.show_storage_usage()
+            total_usage = self.calculate_storage_usage(buckets)
+            self.statusBar.showMessage(
+                f"Total storage usage: {total_usage} MB")
+        except Exception as e:
+            print(f"Failed to update storage usage: {e}")

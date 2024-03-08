@@ -77,7 +77,8 @@ class S3Client:
             return url
         except (BotoCoreError, NoCredentialsError) as e:
             print(
-                f"Failed to generate URL for object '{item}' in bucket '{bucket}': {e}")
+                f"Failed to generate URL for object '{item}' in bucket '{bucket}': {e}"
+            )
             raise
 
     def delete(self, bucket: str, item: str) -> None:
@@ -122,4 +123,25 @@ class S3Client:
         except (BotoCoreError, NoCredentialsError) as e:
             print(
                 f"Failed to upload file '{filename}' to bucket '{bucket}': {e}")
+            raise
+
+    def show_storage_usage(self) -> Dict[str, int]:
+        """
+        Show the storage usage of all buckets.
+
+        :return: A dictionary with the storage usage of all buckets.
+        """
+        try:
+            response = self.client.list_buckets()
+            return {
+                bucket["Name"]: sum(
+                    obj["Size"]
+                    for obj in self.client.list_objects(Bucket=bucket["Name"]).get(
+                        "Contents", []
+                    )
+                )
+                for bucket in response["Buckets"]
+            }
+        except (BotoCoreError, NoCredentialsError) as e:
+            print(f"Failed to show storage usage: {e}")
             raise
