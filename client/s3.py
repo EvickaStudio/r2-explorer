@@ -92,8 +92,7 @@ class S3Client:
         try:
             self.client.delete_object(Bucket=bucket, Key=item)
         except (BotoCoreError, NoCredentialsError) as e:
-            print(
-                f"Failed to delete object '{item}' in bucket '{bucket}': {e}")
+            print(f"Failed to delete object '{item}' in bucket '{bucket}': {e}")
             raise
 
     def download_file(self, bucket: str, key: str, filename: str) -> None:
@@ -107,8 +106,7 @@ class S3Client:
         try:
             self.client.download_file(bucket, key, filename)
         except (BotoCoreError, NoCredentialsError) as e:
-            print(
-                f"Failed to download file '{key}' from bucket '{bucket}': {e}")
+            print(f"Failed to download file '{key}' from bucket '{bucket}': {e}")
             raise
 
     def upload_file(self, bucket: str, key: str, filename: str) -> None:
@@ -122,8 +120,7 @@ class S3Client:
         try:
             self.client.upload_file(filename, bucket, key)
         except (BotoCoreError, NoCredentialsError) as e:
-            print(
-                f"Failed to upload file '{filename}' to bucket '{bucket}': {e}")
+            print(f"Failed to upload file '{filename}' to bucket '{bucket}': {e}")
             raise
 
     def show_storage_usage(self) -> Dict[str, int]:
